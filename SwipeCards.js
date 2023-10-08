@@ -75,16 +75,21 @@ export default class SwipeCards extends Component {
       onPanResponderTerminationRequest: (evt, gestureState) =>
         this.props.allowGestureTermination,
 
-      onPanResponderMove: Animated.event(
-        [
-          null,
-          {
-            dx: this.state.pan.x,
-            dy: this.props.dragY ? this.state.pan.y : new Animated.Value(0),
-          },
-        ],
-        { useNativeDriver: false }
-      ),
+      onPanResponderMove: (e, gestureState) => {
+      // Check if swiping should be disabled (add your condition here)
+      if (!this.props.disableSwiping) {
+        Animated.event(
+          [
+            null,
+            {
+              dx: this.state.pan.x,
+              dy: this.props.dragY ? this.state.pan.y : new Animated.Value(0),
+            },
+          ],
+          { useNativeDriver: false }
+        )(e, gestureState);
+      }
+      },
 
       onPanResponderRelease: async (e, { vx, vy, dx, dy }) => {
         if (this.props.onDragRelease) this.props.onDragRelease();
